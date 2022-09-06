@@ -16,13 +16,16 @@ services:
     command: yarn start:dev
     depends_on:
       - db
+    links:
+      - db
     restart: always
   db:
     container_name: db
-    image: postgres
-    env_file:
-      - .development.env
+    image: postgres:latest
     environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=event-calendar
       - PG_DATA=/var/lib/postgresql/data
     ports:
       - 5432:5432
