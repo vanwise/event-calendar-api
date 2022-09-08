@@ -1,3 +1,5 @@
+import { UserModule } from './user/user.module';
+import { User } from './user/entities/user.entity';
 import { EventModule } from './event/event.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,11 +18,12 @@ import { Event } from './event/entities/event.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [Event],
+      entities: [Event, User],
       synchronize: process.env.NODE_ENV === 'development',
       autoLoadEntities: true,
     }),
     EventModule,
+    UserModule,
   ],
 })
 export class AppModule {}
