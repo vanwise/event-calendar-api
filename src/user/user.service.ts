@@ -1,11 +1,6 @@
 import { CreateUserDto } from './dto/create-user.dto';
-import { GetUserDto } from './dto/get-user.dto';
 import { User } from './entities/user.entity';
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -16,14 +11,10 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async getUser({ login }: GetUserDto): Promise<User> {
-    const user = await this.userRepository.findOneBy({
+  getUserByLogin(login: string): Promise<User> {
+    return this.userRepository.findOneBy({
       login,
     });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -32,7 +23,9 @@ export class UserService {
     });
 
     if (existedUser) {
-      throw new ConflictException({ login: 'Login is already busy' });
+      throw new ConflictException({
+        messages: { login: 'Login is already busy' },
+      });
     }
 
     const newUser = new User();

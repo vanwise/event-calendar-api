@@ -16,7 +16,7 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Event } from './entities/event.entity';
 
-@Controller('/events')
+@Controller('events')
 @ApiTags('Events')
 export class EventController {
   constructor(private readonly eventService: EventService) {}

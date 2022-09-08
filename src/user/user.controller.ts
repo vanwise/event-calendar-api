@@ -1,6 +1,5 @@
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { GetUserDto } from './dto/get-user.dto';
 import {
   Body,
   Controller,
@@ -8,6 +7,7 @@ import {
   Header,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -18,11 +18,11 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get()
+  @Get(':login')
   @ApiOperation({ summary: 'Getting user' })
   @ApiResponse({ status: HttpStatus.OK, type: User })
-  getUser(@Body() getUserDto: GetUserDto) {
-    return this.userService.getUser(getUserDto);
+  getUserByLogin(@Param('login') login: string) {
+    return this.userService.getUserByLogin(login);
   }
 
   @Post()
