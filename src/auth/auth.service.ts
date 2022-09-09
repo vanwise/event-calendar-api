@@ -1,4 +1,3 @@
-import { LoginUserDto } from './dto/login-user.dto';
 import { User } from './../user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './../user/user.service';
@@ -18,8 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(loginUserDto: LoginUserDto) {
-    const user = await this.validateUser(loginUserDto);
+  login(user: User) {
     return this.generateToken(user);
   }
 
@@ -44,10 +42,8 @@ export class AuthService {
     return this.generateToken(newUser);
   }
 
-  private async validateUser(loginUserDto: LoginUserDto) {
-    const existedUser = await this.userService.getUserByLogin(
-      loginUserDto.login,
-    );
+  async validateUser(login: string, password: string): Promise<User> {
+    const existedUser = await this.userService.getUserByLogin(login);
 
     if (!existedUser) {
       throw new NotFoundException({
@@ -56,13 +52,13 @@ export class AuthService {
     }
 
     const isPasswordEqual = await bcrypt.compare(
-      loginUserDto.password,
+      password,
       existedUser.password,
     );
 
     if (!isPasswordEqual) {
       throw new UnauthorizedException({
-        message: 'Incorrect email or password',
+        message: 'Incorrect login or password',
       });
     }
 
@@ -71,7 +67,7 @@ export class AuthService {
 
   private generateToken({ id, login }: User) {
     return {
-      token: this.jwtService.sign({ login, id }),
+      accessToken: this.jwtService.sign({ id, login }),
     };
   }
 }
