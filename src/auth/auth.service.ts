@@ -9,6 +9,13 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { Response } from 'express';
+import { THIRTY_DAYS } from './auth.constants';
+
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -17,11 +24,30 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  login(user: User) {
-    return this.generateToken(user);
+  login(user: User): AuthTokens {
+    return this.generateTokens(user);
   }
 
-  async registration(createUserDto: CreateUserDto) {
+  refreshSession(refreshToken: string): AuthTokens {
+    const message = 'Token expired';
+
+    if (!refreshToken) {
+      throw new UnauthorizedException({ message });
+    }
+
+    const { id, login } =
+      this.jwtService.verify(refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET_KEY,
+      }) || {};
+
+    if (id && login) {
+      return this.generateTokens({ id, login });
+    }
+
+    throw new UnauthorizedException({ message });
+  }
+
+  async registration(createUserDto: CreateUserDto): Promise<AuthTokens> {
     const existedUser = await this.userService.getUserByLogin(
       createUserDto.login,
     );
@@ -39,7 +65,7 @@ export class AuthService {
       password: passwordHash,
     });
 
-    return this.generateToken(newUser);
+    return this.generateTokens(newUser);
   }
 
   async validateUser(login: string, password: string): Promise<User> {
@@ -65,9 +91,26 @@ export class AuthService {
     return existedUser;
   }
 
-  private generateToken({ id, login }: User) {
-    return {
-      accessToken: this.jwtService.sign({ id, login }),
+  private generateTokens({
+    id,
+    login,
+  }: Pick<User, 'id' | 'login'>): AuthTokens {
+    const payload = { id, login };
+    const refreshTokenOptions = {
+      secret: process.env.JWT_REFRESH_SECRET_KEY,
+      expiresIn: '30d',
     };
+
+    return {
+      accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, refreshTokenOptions),
+    };
+  }
+
+  setRefreshTokenInCookie(res: Response, refreshToken: string) {
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: THIRTY_DAYS,
+    });
   }
 }

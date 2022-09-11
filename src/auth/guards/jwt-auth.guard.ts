@@ -26,7 +26,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest(err, user) {
     if (err || !user) {
-      const message = 'Incorrect login or password';
+      const message = 'Token expired';
       throw err || new UnauthorizedException({ message });
     }
     return user;
