@@ -1,16 +1,12 @@
+import { ExceptionService } from './../exception/exception.service';
 import { User } from './../user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './../user/user.service';
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
-import { THIRTY_DAYS } from './auth.constant';
+import { THIRTY_DAYS_IN_MS } from './auth.constant';
 
 export interface AuthTokens {
   accessToken: string;
@@ -22,17 +18,16 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private exceptionService: ExceptionService,
   ) {}
 
   login(user: User): AuthTokens {
     return this.generateTokens(user);
   }
 
-  refreshSession(refreshToken: string): AuthTokens {
-    const message = 'Token expired';
-
+  async refreshSession(refreshToken: string): Promise<AuthTokens> {
     if (!refreshToken) {
-      throw new UnauthorizedException({ message });
+      this.exceptionService.throwTokenExpired();
     }
 
     const { id, login } =
@@ -41,10 +36,11 @@ export class AuthService {
       }) || {};
 
     if (id && login) {
+      await this.validateUserByLoginFromJwt(login);
       return this.generateTokens({ id, login });
     }
 
-    throw new UnauthorizedException({ message });
+    this.exceptionService.throwTokenExpired();
   }
 
   async registration(createUserDto: CreateUserDto): Promise<AuthTokens> {
@@ -53,9 +49,7 @@ export class AuthService {
     );
 
     if (existedUser) {
-      throw new ConflictException({
-        messages: { login: 'Login is already busy' },
-      });
+      this.exceptionService.throwLoginIsBusy();
     }
 
     const salt = 10;
@@ -68,13 +62,21 @@ export class AuthService {
     return this.generateTokens(newUser);
   }
 
+  async validateUserByLoginFromJwt(login: string): Promise<User> {
+    const existedUser = await this.userService.getUserByLogin(login);
+
+    if (!existedUser) {
+      this.exceptionService.throwLoginNotFound();
+    }
+
+    return existedUser;
+  }
+
   async validateUser(login: string, password: string): Promise<User> {
     const existedUser = await this.userService.getUserByLogin(login);
 
     if (!existedUser) {
-      throw new NotFoundException({
-        messages: { login: 'User with this login not found' },
-      });
+      this.exceptionService.throwIncorrectLogInData();
     }
 
     const isPasswordEqual = await bcrypt.compare(
@@ -83,9 +85,7 @@ export class AuthService {
     );
 
     if (!isPasswordEqual) {
-      throw new UnauthorizedException({
-        message: 'Incorrect login or password',
-      });
+      this.exceptionService.throwIncorrectLogInData();
     }
 
     return existedUser;
@@ -110,7 +110,7 @@ export class AuthService {
   setRefreshTokenInCookie(res: Response, refreshToken: string) {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      maxAge: THIRTY_DAYS,
+      maxAge: THIRTY_DAYS_IN_MS,
     });
   }
 }

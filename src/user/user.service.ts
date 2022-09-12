@@ -1,6 +1,7 @@
+import { ExceptionService } from './../exception/exception.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -9,6 +10,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private exceptionService: ExceptionService,
   ) {}
 
   getUserByLogin(login: string): Promise<User> {
@@ -23,9 +25,7 @@ export class UserService {
     });
 
     if (existedUser) {
-      throw new ConflictException({
-        messages: { login: 'Login is already busy' },
-      });
+      this.exceptionService.throwLoginIsBusy();
     }
 
     const newUser = new User();

@@ -1,16 +1,16 @@
+import { ExceptionService } from './../../exception/exception.service';
 import { IS_SKIP_JWT_CHECK_KEY } from '../skip-jwt.decorator';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
+  constructor(
+    private reflector: Reflector,
+    private exceptionService: ExceptionService,
+  ) {
     super();
   }
 
@@ -26,8 +26,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest(err, user) {
     if (err || !user) {
-      const message = 'Token expired';
-      throw err || new UnauthorizedException({ message });
+      throw err || this.exceptionService.throwTokenExpired();
     }
     return user;
   }

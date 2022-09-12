@@ -6,6 +6,7 @@ import { EventModule } from './event/event.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { ExceptionService } from './exception/exception.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
   ],
   providers: [
+    ExceptionService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

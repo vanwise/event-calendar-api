@@ -54,8 +54,8 @@ export class AuthController {
   @SkipJwtCheck()
   @ApiOperation({ summary: 'Refreshing token' })
   @ApiResponse({ status: HttpStatus.OK })
-  refreshSession(@Req() req: Request, @Res() res: Response) {
-    const { accessToken, refreshToken } = this.authService.refreshSession(
+  async refreshSession(@Req() req: Request, @Res() res: Response) {
+    const { accessToken, refreshToken } = await this.authService.refreshSession(
       req.cookies.refreshToken,
     );
 
