@@ -10,7 +10,7 @@ import {
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
-import { THIRTY_DAYS } from './auth.constants';
+import { THIRTY_DAYS } from './auth.constant';
 
 export interface AuthTokens {
   accessToken: string;
