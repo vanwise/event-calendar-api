@@ -9,12 +9,9 @@ import {
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const corsOptions = {
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  };
-  const app = await NestFactory.create(AppModule, { cors: corsOptions });
   const port = process.env.PORT || 3001;
+  const TEN_MINUTES_IN_SEC = 600;
+  const app = await NestFactory.create(AppModule);
 
   function setupSwagger(app: INestApplication) {
     const config = new DocumentBuilder()
@@ -35,6 +32,12 @@ async function bootstrap() {
     );
     throw new BadRequestException({ messages });
   }
+
+  app.enableCors({
+    maxAge: TEN_MINUTES_IN_SEC,
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  });
 
   setupSwagger(app);
   app.use(cookieParser());

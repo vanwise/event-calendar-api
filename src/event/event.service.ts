@@ -1,3 +1,5 @@
+import { ExceptionService } from './../exception/exception.service';
+import { Tag } from './../tag/entities/tag.entity';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { Injectable } from '@nestjs/common';
@@ -10,6 +12,9 @@ export class EventService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
+    private readonly exceptionService: ExceptionService,
   ) {}
 
   getAllEvents(): Promise<Event[]> {
@@ -21,6 +26,7 @@ export class EventService {
 
     event.title = createEventDto.title;
     event.description = createEventDto.description;
+    event.tagId = await this.checkAndGetCorrectTagId(createEventDto.tagId);
     event.startDateISO = new Date(createEventDto.startDateISO);
     event.endDateISO = new Date(createEventDto.endDateISO);
 
@@ -35,6 +41,9 @@ export class EventService {
 
     eventForUpdate.title = updateEventDto.title;
     eventForUpdate.description = updateEventDto.description;
+    eventForUpdate.tagId = await this.checkAndGetCorrectTagId(
+      updateEventDto.tagId,
+    );
     eventForUpdate.startDateISO = new Date(updateEventDto.startDateISO);
     eventForUpdate.endDateISO = new Date(updateEventDto.endDateISO);
 
@@ -44,5 +53,17 @@ export class EventService {
   async removeEvent(id: string) {
     const eventForRemove = await this.eventRepository.findOneBy({ id });
     await this.eventRepository.remove(eventForRemove);
+  }
+
+  private async checkAndGetCorrectTagId(newTagId = '') {
+    const existedTag = await this.tagRepository.findOneBy({
+      id: newTagId,
+    });
+
+    if (!existedTag) {
+      this.exceptionService.throwTagNotFound();
+    }
+
+    return newTagId;
   }
 }

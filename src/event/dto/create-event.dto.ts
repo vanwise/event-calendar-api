@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsISO8601,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateEventDto {
   @IsNotEmpty()
@@ -14,6 +20,14 @@ export class CreateEventDto {
     description: 'Event description',
   })
   readonly description?: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  @ApiProperty({
+    example: 'ace9138c-c255-4c1c-98ff-dbc82a6e51a5',
+    description: 'Generated tag ID',
+  })
+  tagId: string;
 
   @IsNotEmpty()
   @IsString()

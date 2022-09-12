@@ -24,4 +24,10 @@ export class ExceptionService {
       messages: { login: 'Login is already busy' },
     });
   }
+
+  throwTagNotFound() {
+    throw new ConflictException({
+      messages: { tagId: 'There is no tag with this id' },
+    });
+  }
 }

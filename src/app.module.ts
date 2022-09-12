@@ -7,6 +7,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { ExceptionService } from './exception/exception.service';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ExceptionService } from './exception/exception.service';
     EventModule,
     UserModule,
     AuthModule,
+    TagModule,
   ],
   providers: [
     ExceptionService,

@@ -1,8 +1,10 @@
+import { Tag } from './../../tag/entities/tag.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,6 +28,12 @@ export class Event {
     description: 'Event description',
   })
   description: string;
+
+  @Column('uuid')
+  tagId: string;
+
+  @ManyToOne(() => Tag)
+  tag: Tag;
 
   @Column('timestamptz')
   @ApiProperty({
