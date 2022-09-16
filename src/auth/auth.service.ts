@@ -30,17 +30,19 @@ export class AuthService {
       this.exceptionService.throwTokenExpired();
     }
 
-    const { id, login } =
-      this.jwtService.verify(refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET_KEY,
-      }) || {};
+    try {
+      const { id, login } =
+        this.jwtService.verify(refreshToken, {
+          secret: process.env.JWT_REFRESH_SECRET_KEY,
+        }) || {};
 
-    if (id && login) {
-      await this.validateUserByLoginFromJwt(login);
-      return this.generateTokens({ id, login });
+      if (id && login) {
+        await this.validateUserByLoginFromJwt(login);
+        return this.generateTokens({ id, login });
+      }
+    } catch {
+      this.exceptionService.throwTokenExpired();
     }
-
-    this.exceptionService.throwTokenExpired();
   }
 
   async registration(createUserDto: CreateUserDto): Promise<AuthTokens> {
