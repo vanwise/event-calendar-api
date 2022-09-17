@@ -7,7 +7,7 @@ import { AuthService } from '../auth.service';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
     super({
-      secretOrKey: process.env.JWT_ACCESS_SECRET_KEY,
+      secretOrKey: process.env.ACCESS_JWT_SECRET_KEY,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
     });

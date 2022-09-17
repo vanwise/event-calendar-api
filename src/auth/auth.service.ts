@@ -33,7 +33,7 @@ export class AuthService {
     try {
       const { id, login } =
         this.jwtService.verify(refreshToken, {
-          secret: process.env.JWT_REFRESH_SECRET_KEY,
+          secret: process.env.REFRESH_JWT_SECRET_KEY,
         }) || {};
 
       if (id && login) {
@@ -99,7 +99,7 @@ export class AuthService {
   }: Pick<User, 'id' | 'login'>): AuthTokens {
     const payload = { id, login };
     const refreshTokenOptions = {
-      secret: process.env.JWT_REFRESH_SECRET_KEY,
+      secret: process.env.REFRESH_JWT_SECRET_KEY,
       expiresIn: '30d',
     };
 
