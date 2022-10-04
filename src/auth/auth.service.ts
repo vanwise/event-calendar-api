@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
-import { THIRTY_DAYS_IN_MS } from './auth.constant';
+import { THIRTY_DAYS_IN_MS } from './auth.constants';
 
 export interface AuthTokens {
   accessToken: string;

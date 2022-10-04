@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsISO8601,
   IsNotEmpty,
   IsOptional,
@@ -27,7 +28,14 @@ export class CreateEventDto {
     example: 'ace9138c-c255-4c1c-98ff-dbc82a6e51a5',
     description: 'Generated tag ID',
   })
-  tagId: string;
+  readonly tagId: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    description: 'Shows whether the event has a reminder or not',
+  })
+  readonly hasReminder?: boolean;
 
   @IsNotEmpty()
   @IsString()

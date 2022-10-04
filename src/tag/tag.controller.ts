@@ -10,7 +10,7 @@ export class TagController {
 
   @Get()
   @ApiOperation({ summary: 'Getting all tags' })
-  @ApiResponse({ status: HttpStatus.OK, type: Tag })
+  @ApiResponse({ status: HttpStatus.OK, type: Tag, isArray: true })
   getAllTags() {
     return this.tagService.getAllTags();
   }

@@ -7,22 +7,24 @@ import {
   Header,
   HttpCode,
   HttpStatus,
-  Param,
   Post,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @Controller('users')
 @ApiTags('Users')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get(':login')
+  @Get()
   @ApiOperation({ summary: 'Getting user' })
   @ApiResponse({ status: HttpStatus.OK, type: User })
-  getUserByLogin(@Param('login') login: string) {
-    return this.userService.getUserByLogin(login);
+  getUser(@Req() req: Request) {
+    const login = (req.user as User).login;
+    return this.userService.getUser(login);
   }
 
   @Post()

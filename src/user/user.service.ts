@@ -3,7 +3,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsRelations, Repository } from 'typeorm';
+
+export interface PublicUser
+  extends Omit<User, 'password' | 'nullChecks' | 'notificationSubscriptions'> {
+  notificationSubscriptions: string[];
+}
 
 @Injectable()
 export class UserService {
@@ -13,10 +18,23 @@ export class UserService {
     private exceptionService: ExceptionService,
   ) {}
 
-  getUserByLogin(login: string): Promise<User> {
-    return this.userRepository.findOneBy({
-      login,
+  getUserByLogin(
+    login: string,
+    relations?: FindOptionsRelations<User>,
+  ): Promise<User> {
+    return this.userRepository.findOne({
+      where: { login },
+      relations: { notificationSubscriptions: true, ...relations },
     });
+  }
+
+  async getUser(login: string): Promise<PublicUser> {
+    const { password, ...user } = await this.getUserByLogin(login);
+    const notificationSubscriptions = user.notificationSubscriptions.map(
+      ({ endpoint }) => endpoint,
+    );
+
+    return { ...user, notificationSubscriptions };
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {

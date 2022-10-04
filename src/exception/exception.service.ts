@@ -1,6 +1,7 @@
 import {
   ConflictException,
   ForbiddenException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 
@@ -28,6 +29,24 @@ export class ExceptionService {
   throwTagNotFound() {
     throw new ConflictException({
       messages: { tagId: 'There is no tag with this id' },
+    });
+  }
+
+  throwSubscriptionIsExist() {
+    throw new ConflictException({
+      message: 'User is already subscribe to notifications',
+    });
+  }
+
+  throwUserWithoutSubscription() {
+    throw new ConflictException({
+      message: 'User not have any notification subscriptions yet',
+    });
+  }
+
+  throwEventNotFound() {
+    throw new NotFoundException({
+      message: 'Event being updated does not exist',
     });
   }
 }

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsISO8601,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class UpdateEventDto {
   @IsOptional()
@@ -21,7 +27,14 @@ export class UpdateEventDto {
     example: 'ace9138c-c255-4c1c-98ff-dbc82a6e51a5',
     description: 'Generated tag ID',
   })
-  tagId?: string;
+  readonly tagId?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    description: 'Shows whether the event has a reminder or not',
+  })
+  readonly hasReminder?: boolean;
 
   @IsOptional()
   @IsString()
