@@ -1,7 +1,7 @@
-import { ExceptionService } from './../exception/exception.service';
+import { ExceptionsService } from '../exception/exceptions.service';
 import { User } from './../user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from './../user/user.service';
+import { UsersService } from '../user/users.service';
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -16,9 +16,9 @@ export interface AuthTokens {
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
+    private usersService: UsersService,
     private jwtService: JwtService,
-    private exceptionService: ExceptionService,
+    private exceptionsService: ExceptionsService,
   ) {}
 
   login(user: User): AuthTokens {
@@ -27,7 +27,7 @@ export class AuthService {
 
   async refreshSession(refreshToken: string): Promise<AuthTokens> {
     if (!refreshToken) {
-      this.exceptionService.throwTokenExpired();
+      this.exceptionsService.throwTokenExpired();
     }
 
     try {
@@ -41,22 +41,22 @@ export class AuthService {
         return this.generateTokens({ id, login });
       }
     } catch {
-      this.exceptionService.throwTokenExpired();
+      this.exceptionsService.throwTokenExpired();
     }
   }
 
   async registration(createUserDto: CreateUserDto): Promise<AuthTokens> {
-    const existedUser = await this.userService.getUserByLogin(
+    const existedUser = await this.usersService.getUserByLogin(
       createUserDto.login,
     );
 
     if (existedUser) {
-      this.exceptionService.throwLoginIsBusy();
+      this.exceptionsService.throwLoginIsBusy();
     }
 
     const salt = 10;
     const passwordHash = await bcrypt.hash(createUserDto.password, salt);
-    const newUser = await this.userService.createUser({
+    const newUser = await this.usersService.createUser({
       ...createUserDto,
       password: passwordHash,
     });
@@ -65,20 +65,20 @@ export class AuthService {
   }
 
   async validateUserByLoginFromJwt(login: string): Promise<User> {
-    const existedUser = await this.userService.getUserByLogin(login);
+    const existedUser = await this.usersService.getUserByLogin(login);
 
     if (!existedUser) {
-      this.exceptionService.throwLoginNotFound();
+      this.exceptionsService.throwLoginNotFound();
     }
 
     return existedUser;
   }
 
   async validateUser(login: string, password: string): Promise<User> {
-    const existedUser = await this.userService.getUserByLogin(login);
+    const existedUser = await this.usersService.getUserByLogin(login);
 
     if (!existedUser) {
-      this.exceptionService.throwIncorrectLogInData();
+      this.exceptionsService.throwIncorrectLogInData();
     }
 
     const isPasswordEqual = await bcrypt.compare(
@@ -87,7 +87,7 @@ export class AuthService {
     );
 
     if (!isPasswordEqual) {
-      this.exceptionService.throwIncorrectLogInData();
+      this.exceptionsService.throwIncorrectLogInData();
     }
 
     return existedUser;

@@ -3,13 +3,13 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { EventModule } from './event/event.module';
+import { UsersModule } from './user/users.module';
+import { EventsModule } from './event/events.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { ExceptionService } from './exception/exception.service';
-import { TagModule } from './tag/tag.module';
+import { ExceptionsService } from './exception/exceptions.service';
+import { TagsModule } from './tag/tags.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
@@ -28,15 +28,15 @@ import { ScheduleModule } from '@nestjs/schedule';
       synchronize: false,
       autoLoadEntities: true,
     }),
-    EventModule,
-    UserModule,
+    EventsModule,
+    UsersModule,
     AuthModule,
-    TagModule,
+    TagsModule,
     SubscriptionsModule,
     NotificationsModule,
   ],
   providers: [
-    ExceptionService,
+    ExceptionsService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

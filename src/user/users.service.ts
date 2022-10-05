@@ -1,4 +1,4 @@
-import { ExceptionService } from './../exception/exception.service';
+import { ExceptionsService } from '../exception/exceptions.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
@@ -11,11 +11,11 @@ export interface PublicUser
 }
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private exceptionService: ExceptionService,
+    private exceptionsService: ExceptionsService,
   ) {}
 
   getUserByLogin(
@@ -43,7 +43,7 @@ export class UserService {
     });
 
     if (existedUser) {
-      this.exceptionService.throwLoginIsBusy();
+      this.exceptionsService.throwLoginIsBusy();
     }
 
     const newUser = new User();

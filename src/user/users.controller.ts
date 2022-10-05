@@ -10,21 +10,21 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UsersService } from './users.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 @Controller('users')
 @ApiTags('Users')
-export class UserController {
-  constructor(private userService: UserService) {}
+export class UsersController {
+  constructor(private usersService: UsersService) {}
 
   @Get()
   @ApiOperation({ summary: 'Getting user' })
   @ApiResponse({ status: HttpStatus.OK, type: User })
   getUser(@Req() req: Request) {
     const login = (req.user as User).login;
-    return this.userService.getUser(login);
+    return this.usersService.getUser(login);
   }
 
   @Post()
@@ -33,6 +33,6 @@ export class UserController {
   @ApiOperation({ summary: 'Creating user' })
   @ApiResponse({ status: HttpStatus.CREATED, type: User })
   createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+    return this.usersService.createUser(createUserDto);
   }
 }

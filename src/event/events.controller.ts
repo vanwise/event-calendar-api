@@ -1,6 +1,6 @@
-import { User } from './../user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { CreateEventDto } from './dto/create-event.dto';
-import { EventService } from './event.service';
+import { EventsService } from './events.service';
 import {
   Body,
   Controller,
@@ -21,15 +21,15 @@ import { Request } from 'express';
 
 @Controller('events')
 @ApiTags('Events')
-export class EventController {
-  constructor(private readonly eventService: EventService) {}
+export class EventsController {
+  constructor(private readonly eventsService: EventsService) {}
 
   @Get()
   @ApiOperation({ summary: 'Getting all events' })
   @ApiResponse({ status: HttpStatus.OK, type: Event, isArray: true })
   getAllEvents(@Req() req: Request) {
     const userId = (req.user as User).id;
-    return this.eventService.getAllEvents(userId);
+    return this.eventsService.getAllEvents(userId);
   }
 
   @Post()
@@ -39,7 +39,7 @@ export class EventController {
   @Header('Content-Type', 'application/json')
   createEvent(@Body() createEventDto: CreateEventDto, @Req() req: Request) {
     const userLogin = (req.user as User).login;
-    return this.eventService.createEvent(createEventDto, userLogin);
+    return this.eventsService.createEvent(createEventDto, userLogin);
   }
 
   @Patch(':id')
@@ -51,13 +51,13 @@ export class EventController {
     @Req() req: Request,
   ) {
     const userLogin = (req.user as User).login;
-    return this.eventService.updateEvent(id, updateEventDto, userLogin);
+    return this.eventsService.updateEvent(id, updateEventDto, userLogin);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Deleting one event' })
   @ApiResponse({ status: HttpStatus.OK })
   removeEvent(@Param('id') id: string) {
-    this.eventService.removeEvent(id);
+    this.eventsService.removeEvent(id);
   }
 }

@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-export class ExceptionService {
+export class ExceptionsService {
   throwTokenExpired() {
     throw new UnauthorizedException({ message: 'Token expired' });
   }

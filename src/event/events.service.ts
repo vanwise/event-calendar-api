@@ -1,11 +1,11 @@
-import { UserService } from './../user/user.service';
-import { Notification } from './../notifications/entities/notification.entity';
-import { MS_IN_ONE_MINUTE } from './../time/time.constants';
-import { EVENT_NOTIFICATION_START_TIME_IN_MINUTES } from './event.constants';
-import { TimeService } from './../time/time.service';
-import { NotificationsService } from './../notifications/notifications.service';
-import { ExceptionService } from './../exception/exception.service';
-import { Tag } from './../tag/entities/tag.entity';
+import { UsersService } from '../user/users.service';
+import { Notification } from '../notifications/entities/notification.entity';
+import { MS_IN_ONE_MINUTE } from '../time/time.constants';
+import { EVENT_NOTIFICATION_START_TIME_IN_MINUTES } from './events.constants';
+import { TimeService } from '../time/time.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { ExceptionsService } from '../exception/exceptions.service';
+import { Tag } from '../tag/entities/tag.entity';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { Injectable } from '@nestjs/common';
@@ -14,14 +14,14 @@ import { Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
 
 @Injectable()
-export class EventService {
+export class EventsService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
     @InjectRepository(Tag)
     private readonly tagRepository: Repository<Tag>,
-    private readonly userService: UserService,
-    private readonly exceptionService: ExceptionService,
+    private readonly usersService: UsersService,
+    private readonly exceptionsService: ExceptionsService,
     private readonly timeService: TimeService,
     private readonly notificationService: NotificationsService,
   ) {}
@@ -36,7 +36,7 @@ export class EventService {
     createEventDto: CreateEventDto,
     userLogin: string,
   ): Promise<Omit<Event, 'user'>> {
-    const storedUser = await this.userService.getUserByLogin(userLogin);
+    const storedUser = await this.usersService.getUserByLogin(userLogin);
     const event = this.eventRepository.create({
       title: createEventDto.title,
       description: createEventDto.description,
@@ -66,7 +66,7 @@ export class EventService {
     const eventForUpdate = await this.eventRepository.findOneBy({ id });
 
     if (!eventForUpdate) {
-      return this.exceptionService.throwEventNotFound();
+      return this.exceptionsService.throwEventNotFound();
     }
 
     eventForUpdate.title = updateEventDto.title;
@@ -118,7 +118,7 @@ export class EventService {
     });
 
     if (!existedTag) {
-      this.exceptionService.throwTagNotFound();
+      this.exceptionsService.throwTagNotFound();
     }
 
     return newTagId;

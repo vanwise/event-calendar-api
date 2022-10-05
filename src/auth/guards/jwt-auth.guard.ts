@@ -1,4 +1,4 @@
-import { ExceptionService } from './../../exception/exception.service';
+import { ExceptionsService } from '../../exception/exceptions.service';
 import { IS_SKIP_JWT_CHECK_KEY } from '../skip-jwt.decorator';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private reflector: Reflector,
-    private exceptionService: ExceptionService,
+    private exceptionsService: ExceptionsService,
   ) {
     super();
   }
@@ -26,7 +26,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest(err, user) {
     if (err || !user) {
-      throw err || this.exceptionService.throwTokenExpired();
+      throw err || this.exceptionsService.throwTokenExpired();
     }
     return user;
   }

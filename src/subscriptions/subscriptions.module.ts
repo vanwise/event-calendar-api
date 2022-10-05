@@ -1,6 +1,6 @@
 import { User } from '../user/entities/user.entity';
-import { UserModule } from '../user/user.module';
-import { ExceptionService } from '../exception/exception.service';
+import { UsersModule } from '../user/users.module';
+import { ExceptionsService } from '../exception/exceptions.service';
 import { NotificationSubscription } from './entities/notification-subscription.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SubscriptionsService } from './subscriptions.service';
@@ -9,10 +9,10 @@ import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
-    UserModule,
+    UsersModule,
     TypeOrmModule.forFeature([NotificationSubscription, User]),
   ],
   controllers: [SubscriptionsController],
-  providers: [SubscriptionsService, ExceptionService],
+  providers: [SubscriptionsService, ExceptionsService],
 })
 export class SubscriptionsModule {}

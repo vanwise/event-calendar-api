@@ -1,16 +1,16 @@
-import { ExceptionService } from './../../exception/exception.service';
+import { ExceptionsService } from '../../exception/exceptions.service';
 import { Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
-  constructor(private exceptionService: ExceptionService) {
+  constructor(private exceptionsService: ExceptionsService) {
     super();
   }
 
   handleRequest(err, user) {
     if (err || !user) {
-      throw err || this.exceptionService.throwIncorrectLogInData();
+      throw err || this.exceptionsService.throwIncorrectLogInData();
     }
     return user;
   }

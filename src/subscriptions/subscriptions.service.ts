@@ -1,6 +1,6 @@
 import { User } from '../user/entities/user.entity';
-import { ExceptionService } from '../exception/exception.service';
-import { UserService } from '../user/user.service';
+import { ExceptionsService } from '../exception/exceptions.service';
+import { UsersService } from '../user/users.service';
 import { Injectable } from '@nestjs/common';
 import { CreateNotificationSubscriptionDto } from './dto/create-notification-subscription-dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,21 +14,21 @@ export class SubscriptionsService {
     private notificationSubscriptionRepository: Repository<NotificationSubscription>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private userService: UserService,
-    private exceptionService: ExceptionService,
+    private usersService: UsersService,
+    private exceptionsService: ExceptionsService,
   ) {}
 
   async createNotificationSubscription(
     createNotificationSubscriptionDto: CreateNotificationSubscriptionDto,
     userLogin: string,
   ): Promise<void> {
-    const user = await this.userService.getUserByLogin(userLogin);
+    const user = await this.usersService.getUserByLogin(userLogin);
     const isUserSubscriptionExist = user.notificationSubscriptions?.some(
       ({ endpoint }) => createNotificationSubscriptionDto.endpoint === endpoint,
     );
 
     if (isUserSubscriptionExist) {
-      this.exceptionService.throwSubscriptionIsExist();
+      this.exceptionsService.throwSubscriptionIsExist();
     }
 
     const storedSubscription =
@@ -50,7 +50,7 @@ export class SubscriptionsService {
   }
 
   async removeUserNotificationSubscriptions(userLogin: string): Promise<void> {
-    const user = await this.userService.getUserByLogin(userLogin);
+    const user = await this.usersService.getUserByLogin(userLogin);
 
     user.notificationSubscriptions.forEach(async ({ endpoint }) => {
       const storedSubscription =

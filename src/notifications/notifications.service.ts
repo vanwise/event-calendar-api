@@ -4,8 +4,8 @@ import { Notification } from './entities/notification.entity';
 import { NotificationSubscription } from './../subscriptions/entities/notification-subscription.entity';
 import { UNSUBSCRIBED_CODE } from './notifications.constants';
 import { TasksService } from '../tasks/tasks.service';
-import { ExceptionService } from '../exception/exception.service';
-import { UserService } from '../user/user.service';
+import { ExceptionsService } from '../exception/exceptions.service';
+import { UsersService } from '../user/users.service';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';
@@ -37,8 +37,8 @@ export class NotificationsService implements OnModuleInit {
     private notificationsRepository: Repository<Notification>,
     @InjectRepository(NotificationSubscription)
     private notificationSubscriptionRepository: Repository<NotificationSubscription>,
-    private userService: UserService,
-    private exceptionService: ExceptionService,
+    private usersService: UsersService,
+    private exceptionsService: ExceptionsService,
     private tasksService: TasksService,
     private timeService: TimeService,
   ) {
@@ -106,10 +106,10 @@ export class NotificationsService implements OnModuleInit {
     userLogin,
     notification,
   }: CreateNotificationArgs): Promise<Notification> {
-    const user = await this.userService.getUserByLogin(userLogin);
+    const user = await this.usersService.getUserByLogin(userLogin);
 
     if (!user.notificationSubscriptions.length) {
-      this.exceptionService.throwUserWithoutSubscription();
+      this.exceptionsService.throwUserWithoutSubscription();
     }
 
     const notificationEntity = this.notificationsRepository.create({

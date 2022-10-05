@@ -1,6 +1,6 @@
-import { ExceptionService } from './../exception/exception.service';
+import { ExceptionsService } from '../exception/exceptions.service';
 import { LocalStrategy } from './strategies/local.strategy';
-import { UserModule } from './../user/user.module';
+import { UsersModule } from '../user/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -10,7 +10,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
-    UserModule,
+    UsersModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.ACCESS_JWT_SECRET_KEY,
@@ -18,7 +18,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, ExceptionService],
+  providers: [AuthService, LocalStrategy, JwtStrategy, ExceptionsService],
   exports: [AuthService],
 })
 export class AuthModule {}
