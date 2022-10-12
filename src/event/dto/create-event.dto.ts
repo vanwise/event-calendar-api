@@ -7,15 +7,16 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
+import { IsNotEmptyString } from '../../validations/IsNotEmptyString';
 
 export class CreateEventDto {
   @IsNotEmpty()
-  @IsString()
+  @IsNotEmptyString()
   @ApiProperty({ example: 'Super event', description: 'Event title' })
   readonly title: string;
 
   @IsOptional()
-  @IsString()
+  @IsNotEmptyString()
   @ApiProperty({
     example: 'This event very cool',
     description: 'Event description',
