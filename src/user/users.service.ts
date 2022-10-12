@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsRelations, Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 export interface PublicUser
   extends Omit<User, 'password' | 'nullChecks' | 'notificationSubscriptions'> {
@@ -38,8 +39,9 @@ export class UsersService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const trimmedLogin = createUserDto.login.trim();
     const existedUser = await this.userRepository.findOneBy({
-      login: createUserDto.login,
+      login: trimmedLogin,
     });
 
     if (existedUser) {
@@ -48,11 +50,15 @@ export class UsersService {
 
     const newUser = new User();
 
-    newUser.firstName = createUserDto.firstName;
-    newUser.lastName = createUserDto.lastName;
+    const salt = 10;
+    const trimmedPassword = createUserDto.password.trim();
+    const passwordHash = await bcrypt.hash(trimmedPassword, salt);
+
+    newUser.firstName = createUserDto.firstName.trim();
+    newUser.lastName = createUserDto.lastName.trim();
     newUser.email = createUserDto.email;
-    newUser.login = createUserDto.login;
-    newUser.password = createUserDto.password;
+    newUser.login = trimmedLogin;
+    newUser.password = passwordHash;
 
     return this.userRepository.save(newUser);
   }

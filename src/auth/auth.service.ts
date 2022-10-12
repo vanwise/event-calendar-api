@@ -4,9 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../user/users.service';
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { THIRTY_DAYS_IN_MS } from './auth.constants';
+import * as bcrypt from 'bcrypt';
 
 export interface AuthTokens {
   accessToken: string;
@@ -46,21 +46,7 @@ export class AuthService {
   }
 
   async registration(createUserDto: CreateUserDto): Promise<AuthTokens> {
-    const existedUser = await this.usersService.getUserByLogin(
-      createUserDto.login,
-    );
-
-    if (existedUser) {
-      this.exceptionsService.throwLoginIsBusy();
-    }
-
-    const salt = 10;
-    const passwordHash = await bcrypt.hash(createUserDto.password, salt);
-    const newUser = await this.usersService.createUser({
-      ...createUserDto,
-      password: passwordHash,
-    });
-
+    const newUser = await this.usersService.createUser(createUserDto);
     return this.generateTokens(newUser);
   }
 

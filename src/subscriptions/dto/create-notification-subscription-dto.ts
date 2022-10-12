@@ -4,25 +4,25 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString,
   ValidateNested,
 } from 'class-validator';
+import { IsNotEmptyString } from '../../validations/IsNotEmptyString';
 
 class SubscriptionKeys {
   @IsNotEmpty()
-  @IsString()
+  @IsNotEmptyString()
   @ApiProperty({ description: 'Subscription auth p256dh string' })
   readonly p256dh: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsNotEmptyString()
   @ApiProperty({ description: 'Subscription auth string' })
   readonly auth: string;
 }
 
 export class CreateNotificationSubscriptionDto {
   @IsNotEmpty()
-  @IsString()
+  @IsNotEmptyString()
   @ApiProperty({ description: 'Subscription endpoint link' })
   readonly endpoint: string;
 

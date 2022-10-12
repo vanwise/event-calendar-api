@@ -1,6 +1,6 @@
-import { User } from './../../user/entities/user.entity';
-import { Notification } from './../../notifications/entities/notification.entity';
-import { Tag } from './../../tag/entities/tag.entity';
+import { User } from '../../user/entities/user.entity';
+import { Notification } from '../../notifications/entities/notification.entity';
+import { Tag } from '../../tag/entities/tag.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
@@ -8,7 +8,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,

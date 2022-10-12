@@ -1,4 +1,4 @@
-import { Event } from './../../event/entities/event.entity';
+import { Event } from '../../events/entities/event.entity';
 import { Notification } from './../../notifications/entities/notification.entity';
 import { NotificationSubscription } from './../../subscriptions/entities/notification-subscription.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -7,7 +7,6 @@ import {
   CreateDateColumn,
   Entity,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,

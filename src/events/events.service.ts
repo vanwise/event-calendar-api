@@ -38,8 +38,8 @@ export class EventsService {
   ): Promise<Omit<Event, 'user'>> {
     const storedUser = await this.usersService.getUserByLogin(userLogin);
     const event = this.eventRepository.create({
-      title: createEventDto.title,
-      description: createEventDto.description,
+      title: createEventDto.title.trim(),
+      description: createEventDto.description.trim(),
       tagId: await this.checkAndGetCorrectTagId(createEventDto.tagId),
       startDateISO: new Date(createEventDto.startDateISO),
       endDateISO: new Date(createEventDto.endDateISO),
@@ -51,7 +51,7 @@ export class EventsService {
         event,
         userLogin,
       );
-      event.notificationId = createdNotification.id;
+      event.notificationId = createdNotification?.id || null;
     }
 
     const { user, ...savedEvent } = await this.eventRepository.save(event);
@@ -69,8 +69,8 @@ export class EventsService {
       return this.exceptionsService.throwEventNotFound();
     }
 
-    eventForUpdate.title = updateEventDto.title;
-    eventForUpdate.description = updateEventDto.description;
+    eventForUpdate.title = updateEventDto.title.trim();
+    eventForUpdate.description = updateEventDto.description.trim();
     eventForUpdate.tagId = await this.checkAndGetCorrectTagId(
       updateEventDto.tagId,
     );
@@ -94,7 +94,7 @@ export class EventsService {
         eventForUpdate,
         userLogin,
       );
-      eventForUpdate.notificationId = createdNotification.id;
+      eventForUpdate.notificationId = createdNotification?.id || null;
     }
 
     return await this.eventRepository.save(eventForUpdate);

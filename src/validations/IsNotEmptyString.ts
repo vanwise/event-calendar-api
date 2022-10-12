@@ -9,9 +9,15 @@ export function IsNotEmptyString(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any) {
-          return typeof value === 'string' && value.trim().length > 0;
+          if (typeof value !== 'string' || (value && !value.trim().length)) {
+            return false;
+          }
+          return true;
         },
         defaultMessage(validationArguments) {
+          if (typeof validationArguments?.value !== 'string') {
+            return `${validationArguments?.property} must be a string`;
+          }
           return `${validationArguments?.property} cannot contain only spaces`;
         },
       },
