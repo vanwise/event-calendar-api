@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   NotFoundException,
@@ -47,6 +48,18 @@ export class ExceptionsService {
   throwEventNotFound() {
     throw new NotFoundException({
       message: 'Event being updated does not exist',
+    });
+  }
+
+  throwEventStartDateInPast() {
+    throw new BadRequestException({
+      message: 'Start date and time must be in future',
+    });
+  }
+
+  throwEventEndDateBeforeStart() {
+    throw new BadRequestException({
+      message: 'End date and time must be after start date',
     });
   }
 }

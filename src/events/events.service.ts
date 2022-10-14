@@ -37,12 +37,19 @@ export class EventsService {
     userLogin: string,
   ): Promise<Omit<Event, 'user'>> {
     const storedUser = await this.usersService.getUserByLogin(userLogin);
+    const endDate = this.checkAndGetEndDateAfterStart(
+      createEventDto.startDateISO,
+      createEventDto.endDateISO,
+    );
+
     const event = this.eventRepository.create({
       title: createEventDto.title.trim(),
       description: createEventDto.description.trim(),
       tagId: await this.checkAndGetCorrectTagId(createEventDto.tagId),
-      startDateISO: new Date(createEventDto.startDateISO),
-      endDateISO: new Date(createEventDto.endDateISO),
+      startDateISO: this.checkAndGetStartDateInFuture(
+        createEventDto.startDateISO,
+      ),
+      endDateISO: endDate,
       user: storedUser,
     });
 
@@ -69,13 +76,20 @@ export class EventsService {
       return this.exceptionsService.throwEventNotFound();
     }
 
+    const endDate = this.checkAndGetEndDateAfterStart(
+      updateEventDto.startDateISO || eventForUpdate.startDateISO,
+      updateEventDto.endDateISO || eventForUpdate.endDateISO,
+    );
+
     eventForUpdate.title = updateEventDto.title.trim();
     eventForUpdate.description = updateEventDto.description.trim();
     eventForUpdate.tagId = await this.checkAndGetCorrectTagId(
       updateEventDto.tagId,
     );
-    eventForUpdate.startDateISO = new Date(updateEventDto.startDateISO);
-    eventForUpdate.endDateISO = new Date(updateEventDto.endDateISO);
+    eventForUpdate.startDateISO = this.checkAndGetStartDateInFuture(
+      updateEventDto.startDateISO,
+    );
+    eventForUpdate.endDateISO = endDate;
 
     const hasStoredReminder = Boolean(eventForUpdate.notificationId);
     const isDeletingReminder = hasStoredReminder && !updateEventDto.hasReminder;
@@ -110,6 +124,30 @@ export class EventsService {
         eventForRemove.id,
       );
     }
+  }
+
+  private checkAndGetStartDateInFuture(startDateISO: string) {
+    const startDate = this.timeService.getDate(startDateISO);
+    const isStartDateInPast = startDate.isBefore(this.timeService.getDate());
+
+    if (isStartDateInPast) {
+      this.exceptionsService.throwEventStartDateInPast();
+    }
+
+    return startDate.toDate();
+  }
+
+  private checkAndGetEndDateAfterStart(
+    startDateISO: string | Date,
+    endDateISO: string | Date,
+  ) {
+    const endDate = this.timeService.getDate(endDateISO);
+
+    if (endDate.isBefore(startDateISO)) {
+      this.exceptionsService.throwEventEndDateBeforeStart();
+    }
+
+    return endDate.toDate();
   }
 
   private async checkAndGetCorrectTagId(newTagId = ''): Promise<string> {
