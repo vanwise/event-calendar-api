@@ -95,23 +95,25 @@ export class EventsService {
     const isDeletingReminder = hasStoredReminder && !updateEventDto.hasReminder;
 
     if (isDeletingReminder) {
-      eventForUpdate.notification = null;
-    }
+      const deletedNotificationId = eventForUpdate.notificationId;
 
-    if (isDeletingReminder) {
+      eventForUpdate.notification = null;
+      const savedEvent = await this.eventRepository.save(eventForUpdate);
+
       await this.notificationService.removeNotification(
-        eventForUpdate.notificationId,
+        deletedNotificationId,
         eventForUpdate.id,
       );
+      return savedEvent;
     } else if (!hasStoredReminder && updateEventDto.hasReminder) {
       const createdNotification = await this.createEventNotification(
         eventForUpdate,
         userLogin,
       );
-      eventForUpdate.notificationId = createdNotification?.id || null;
-    }
 
-    return await this.eventRepository.save(eventForUpdate);
+      eventForUpdate.notificationId = createdNotification?.id || null;
+      return await this.eventRepository.save(eventForUpdate);
+    }
   }
 
   async removeEvent(id: string): Promise<void> {
