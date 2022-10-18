@@ -1,4 +1,4 @@
-import { User } from '../user/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { EventsService } from './events.service';
 import {

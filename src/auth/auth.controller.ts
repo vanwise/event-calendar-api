@@ -1,7 +1,7 @@
-import { User } from './../user/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './../user/dto/create-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import {
   Body,
   Controller,
@@ -26,11 +26,9 @@ export class AuthController {
   @ApiOperation({ summary: 'Sign in' })
   @ApiResponse({ status: HttpStatus.OK })
   login(@Req() req: Request, @Res() res: Response) {
-    const { accessToken, refreshToken } = this.authService.login(
-      req.user as User,
-    );
+    const user = req.user as User;
+    const accessToken = this.authService.login(user, res);
 
-    this.authService.setRefreshTokenInCookie(res, refreshToken);
     res.send({ accessToken });
   }
 
@@ -42,11 +40,7 @@ export class AuthController {
     @Body() createUserDto: CreateUserDto,
     @Res() res: Response,
   ) {
-    const { accessToken, refreshToken } = await this.authService.registration(
-      createUserDto,
-    );
-
-    this.authService.setRefreshTokenInCookie(res, refreshToken);
+    const accessToken = await this.authService.registration(createUserDto, res);
     res.send({ accessToken });
   }
 
@@ -55,11 +49,11 @@ export class AuthController {
   @ApiOperation({ summary: 'Refreshing token' })
   @ApiResponse({ status: HttpStatus.OK })
   async refreshSession(@Req() req: Request, @Res() res: Response) {
-    const { accessToken, refreshToken } = await this.authService.refreshSession(
+    const accessToken = await this.authService.refreshSession(
       req.cookies.refreshToken,
+      res,
     );
 
-    this.authService.setRefreshTokenInCookie(res, refreshToken);
     res.send({ accessToken });
   }
 }

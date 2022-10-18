@@ -1,11 +1,11 @@
-import { UsersService } from '../user/users.service';
+import { UsersService } from '../users/users.service';
 import { Notification } from '../notifications/entities/notification.entity';
 import { MS_IN_ONE_MINUTE } from '../time/time.constants';
 import { EVENT_NOTIFICATION_START_TIME_IN_MINUTES } from './events.constants';
 import { TimeService } from '../time/time.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { ExceptionsService } from '../exception/exceptions.service';
-import { Tag } from '../tag/entities/tag.entity';
+import { ExceptionsService } from '../exceptions/exceptions.service';
+import { Tag } from '../tags/entities/tag.entity';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { Injectable } from '@nestjs/common';
@@ -112,8 +112,9 @@ export class EventsService {
       );
 
       eventForUpdate.notificationId = createdNotification?.id || null;
-      return await this.eventRepository.save(eventForUpdate);
     }
+
+    return await this.eventRepository.save(eventForUpdate);
   }
 
   async removeEvent(id: string): Promise<void> {

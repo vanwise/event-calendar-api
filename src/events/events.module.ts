@@ -1,8 +1,8 @@
-import { UsersModule } from '../user/users.module';
+import { UsersModule } from '../users/users.module';
 import { TimeService } from '../time/time.service';
 import { NotificationsModule } from '../notifications/notifications.module';
-import { ExceptionsService } from '../exception/exceptions.service';
-import { Tag } from '../tag/entities/tag.entity';
+import { ExceptionsService } from '../exceptions/exceptions.service';
+import { Tag } from '../tags/entities/tag.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventsService } from './events.service';
 import { EventsController } from './events.controller';

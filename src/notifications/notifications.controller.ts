@@ -1,5 +1,5 @@
 import { Notification } from './entities/notification.entity';
-import { User } from '../user/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { NotificationsService } from './notifications.service';
 import { Controller, Get, Param, Post, Req, HttpStatus } from '@nestjs/common';
 import { Request } from 'express';

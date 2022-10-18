@@ -1,4 +1,4 @@
-import { ExceptionsService } from '../../exception/exceptions.service';
+import { ExceptionsService } from '../../exceptions/exceptions.service';
 import { IS_SKIP_JWT_CHECK_KEY } from '../skip-jwt.decorator';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';

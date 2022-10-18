@@ -1,6 +1,6 @@
 import { Event } from '../../events/entities/event.entity';
-import { Notification } from './../../notifications/entities/notification.entity';
-import { NotificationSubscription } from './../../subscriptions/entities/notification-subscription.entity';
+import { Notification } from '../../notifications/entities/notification.entity';
+import { NotificationSubscription } from '../../subscriptions/entities/notification-subscription.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
@@ -56,17 +56,24 @@ export class User {
   @ApiProperty({ type: Event, isArray: true })
   events: Event[];
 
+  @Column('timestamptz', { default: new Date() })
+  @ApiProperty({
+    example: '2022-09-14T18:00:00.000Z',
+    description: 'User password change date',
+  })
+  passwordChangeDate: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   @ApiProperty({
     example: '2022-09-14T18:00:00.000Z',
-    description: 'Event start date',
+    description: 'User creating date',
   })
   createdAt: string;
 
   @UpdateDateColumn({ type: 'timestamptz' })
   @ApiProperty({
     example: '2022-09-14T18:00:00.000Z',
-    description: 'Event end date',
+    description: 'User updating date',
   })
   updatedAt: string;
 }

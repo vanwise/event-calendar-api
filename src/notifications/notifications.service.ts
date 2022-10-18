@@ -1,11 +1,11 @@
 import { TimeService } from './../time/time.service';
-import { User } from './../user/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { Notification } from './entities/notification.entity';
 import { NotificationSubscription } from './../subscriptions/entities/notification-subscription.entity';
 import { UNSUBSCRIBED_CODE } from './notifications.constants';
 import { TasksService } from '../tasks/tasks.service';
-import { ExceptionsService } from '../exception/exceptions.service';
-import { UsersService } from '../user/users.service';
+import { ExceptionsService } from '../exceptions/exceptions.service';
+import { UsersService } from '../users/users.service';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';

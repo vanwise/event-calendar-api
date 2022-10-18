@@ -62,4 +62,10 @@ export class ExceptionsService {
       message: 'End date and time must be after start date',
     });
   }
+
+  throwIncorrectCurrentPassword() {
+    throw new BadRequestException({
+      messages: { currentPassword: 'Incorrect current password' },
+    });
+  }
 }

@@ -1,6 +1,6 @@
-import { User } from '../../user/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { Notification } from '../../notifications/entities/notification.entity';
-import { Tag } from '../../tag/entities/tag.entity';
+import { Tag } from '../../tags/entities/tag.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,

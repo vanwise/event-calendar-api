@@ -1,4 +1,4 @@
-import { ExceptionsService } from '../../exception/exceptions.service';
+import { ExceptionsService } from '../../exceptions/exceptions.service';
 import { Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 

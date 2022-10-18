@@ -1,6 +1,6 @@
-import { User } from '../user/entities/user.entity';
-import { UsersModule } from '../user/users.module';
-import { ExceptionsService } from '../exception/exceptions.service';
+import { User } from '../users/entities/user.entity';
+import { UsersModule } from '../users/users.module';
+import { ExceptionsService } from '../exceptions/exceptions.service';
 import { NotificationSubscription } from './entities/notification-subscription.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SubscriptionsService } from './subscriptions.service';

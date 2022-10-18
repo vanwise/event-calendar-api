@@ -1,6 +1,6 @@
-import { User } from '../user/entities/user.entity';
-import { ExceptionsService } from '../exception/exceptions.service';
-import { UsersService } from '../user/users.service';
+import { User } from '../users/entities/user.entity';
+import { ExceptionsService } from '../exceptions/exceptions.service';
+import { UsersService } from '../users/users.service';
 import { Injectable } from '@nestjs/common';
 import { CreateNotificationSubscriptionDto } from './dto/create-notification-subscription-dto';
 import { InjectRepository } from '@nestjs/typeorm';
