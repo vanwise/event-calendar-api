@@ -1,3 +1,5 @@
+import { ConfigService } from '@nestjs/config';
+import { ConfigServiceType } from '../config/config.utils';
 import { TimeService } from './../time/time.service';
 import { User } from '../users/entities/user.entity';
 import { Notification } from './entities/notification.entity';
@@ -6,7 +8,7 @@ import { UNSUBSCRIBED_CODE } from './notifications.constants';
 import { TasksService } from '../tasks/tasks.service';
 import { ExceptionsService } from '../exceptions/exceptions.service';
 import { UsersService } from '../users/users.service';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';
 import * as webpush from 'web-push';
@@ -41,11 +43,13 @@ export class NotificationsService implements OnModuleInit {
     private exceptionsService: ExceptionsService,
     private tasksService: TasksService,
     private timeService: TimeService,
+    @Inject(ConfigService)
+    private configService: ConfigServiceType,
   ) {
     webpush.setVapidDetails(
-      `mailto:${process.env.WEB_PUSH_CONTACT_EMAIL}`,
-      process.env.PUBLIC_VAPID_KEY,
-      process.env.PRIVATE_VAPID_KEY,
+      `mailto:${configService.get('WEB_PUSH_CONTACT_EMAIL')}`,
+      configService.get('PUBLIC_VAPID_KEY'),
+      configService.get('PRIVATE_VAPID_KEY'),
     );
   }
 

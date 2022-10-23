@@ -12,7 +12,7 @@
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "NODE_ENV=production node dist/main",
+    "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -23,7 +23,8 @@
     "typeorm-cli": "ts-node ./node_modules/typeorm/cli.js -d ./database/ormconfig.ts",
     "migrate:run": "yarn typeorm-cli migration:run",
     "migrate:generate": "yarn typeorm-cli migration:generate ./database/migrations/$npm_config_name",
-    "migrate:revert": "yarn typeorm-cli migration:revert"
+    "migrate:revert": "yarn typeorm-cli migration:revert",
+    "docker-compose-rebuild": "docker-compose up --build -V"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -41,6 +42,7 @@
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.5",
     "dotenv": "^16.0.2",
+    "joi": "^17.6.4",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

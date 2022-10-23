@@ -2,8 +2,13 @@ FROM node:16.15.0
 
 WORKDIR /app
 
-COPY . .
+COPY ./package.json ./
+COPY ./yarn.lock ./
 
 RUN yarn
 
-CMD ["yarn", "start:dev"]
+COPY . .
+
+RUN yarn build
+
+CMD ["yarn", "start:prod"]
