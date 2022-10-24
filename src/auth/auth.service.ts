@@ -112,9 +112,12 @@ export class AuthService {
     res: Response,
   ): string {
     const { accessToken, refreshToken } = this.generateTokens(userData);
+    const isWorkOnHTTPSOnly = !(process.env.NODE_ENV === 'development');
 
     res.cookie('refreshToken', refreshToken, {
+      secure: isWorkOnHTTPSOnly,
       httpOnly: true,
+      sameSite: 'none',
       maxAge: THIRTY_DAYS_IN_MS,
     });
 
