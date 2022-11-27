@@ -1,20 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
-import { IsNotEmptyString } from '../../validations/IsNotEmptyString';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Trim } from '../../validations/Trim';
+import { EmptyStringToNull } from '../../validations/EmptyStringToNull';
+import { IsUndefined } from '../../validations/IsUndefined';
 
 export class UpdateUserDto {
+  @IsUndefined()
+  @IsString()
+  @Trim()
   @IsNotEmpty()
-  @IsNotEmptyString()
   @ApiProperty({ example: 'John', description: 'User first name' })
   readonly firstName?: string;
 
   @IsOptional()
-  @IsNotEmptyString()
+  @IsString()
+  @Trim()
+  @EmptyStringToNull()
   @ApiProperty({ example: 'Doe', description: 'User last name' })
-  readonly lastName?: string;
+  readonly lastName?: string | null;
 
-  @IsNotEmpty()
+  @IsOptional()
+  @IsString()
+  @Trim()
+  @EmptyStringToNull()
   @IsEmail()
   @ApiProperty({ example: 'example@mail.com', description: 'User email' })
-  readonly email?: string;
+  readonly email?: string | null;
 }

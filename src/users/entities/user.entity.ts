@@ -29,9 +29,9 @@ export class User {
   @ApiProperty({ example: 'Doe', description: 'User last name' })
   lastName: string | null;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   @ApiProperty({ example: 'example@mail.com', description: 'User email' })
-  email: string;
+  email: string | null;
 
   @Column('text', { unique: true })
   @ApiProperty({ example: 'john_doe', description: 'Unique login' })
@@ -56,7 +56,7 @@ export class User {
   @ApiProperty({ type: Event, isArray: true })
   events: Event[];
 
-  @Column('timestamptz', { default: new Date() })
+  @Column('timestamptz')
   @ApiProperty({
     example: '2022-09-14T18:00:00.000Z',
     description: 'User password change date',

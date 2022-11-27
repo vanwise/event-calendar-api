@@ -19,13 +19,12 @@ export class SubscriptionsService {
   ) {}
 
   async createNotificationSubscription(
-    createNotificationSubscriptionDto: CreateNotificationSubscriptionDto,
+    { endpoint, keys }: CreateNotificationSubscriptionDto,
     userLogin: string,
   ): Promise<void> {
-    const trimmedEndpoint = createNotificationSubscriptionDto.endpoint.trim();
     const user = await this.usersService.getUserByLogin(userLogin);
     const isUserSubscriptionExist = user.notificationSubscriptions?.some(
-      ({ endpoint }) => trimmedEndpoint === endpoint,
+      (subscription) => endpoint === subscription.endpoint,
     );
 
     if (isUserSubscriptionExist) {
@@ -34,7 +33,7 @@ export class SubscriptionsService {
 
     const storedSubscription =
       await this.notificationSubscriptionRepository.findOneBy({
-        endpoint: trimmedEndpoint,
+        endpoint,
       });
 
     if (storedSubscription) {
@@ -42,10 +41,10 @@ export class SubscriptionsService {
       this.userRepository.save(user);
     } else {
       const subscription = this.notificationSubscriptionRepository.create({
-        endpoint: trimmedEndpoint,
+        endpoint,
         keys: {
-          p256dh: createNotificationSubscriptionDto.keys.p256dh.trim(),
-          auth: createNotificationSubscriptionDto.keys.auth.trim(),
+          p256dh: keys.p256dh,
+          auth: keys.auth,
         },
         users: [user],
       });

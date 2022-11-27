@@ -3,8 +3,8 @@ import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
-const nodeEnv = process.env.NODE_ENV;
-dotenv.config({ path: nodeEnv ? `.${nodeEnv}.env` : '.env' });
+const nodeEnv = process.env.NODE_ENV || 'development';
+dotenv.config({ path: `.${nodeEnv}.env` });
 
 const sslDBOptions = {
   ssl: true,

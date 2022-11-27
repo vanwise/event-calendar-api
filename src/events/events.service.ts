@@ -43,8 +43,8 @@ export class EventsService {
     );
 
     const event = this.eventRepository.create({
-      title: createEventDto.title.trim(),
-      description: createEventDto.description.trim(),
+      title: createEventDto.title,
+      description: createEventDto.description,
       tagId: await this.checkAndGetCorrectTagId(createEventDto.tagId),
       startDateISO: this.checkAndGetStartDateInFuture(
         createEventDto.startDateISO,
@@ -81,15 +81,18 @@ export class EventsService {
       updateEventDto.endDateISO || eventForUpdate.endDateISO,
     );
 
-    eventForUpdate.title = updateEventDto.title.trim();
-    eventForUpdate.description = updateEventDto.description.trim();
-    eventForUpdate.tagId = await this.checkAndGetCorrectTagId(
-      updateEventDto.tagId,
-    );
+    if (updateEventDto.tagId) {
+      eventForUpdate.tagId = await this.checkAndGetCorrectTagId(
+        updateEventDto.tagId,
+      );
+    }
+
+    eventForUpdate.endDateISO = endDate;
+    eventForUpdate.title = updateEventDto.title;
+    eventForUpdate.description = updateEventDto.description;
     eventForUpdate.startDateISO = this.checkAndGetStartDateInFuture(
       updateEventDto.startDateISO,
     );
-    eventForUpdate.endDateISO = endDate;
 
     const hasStoredReminder = Boolean(eventForUpdate.notificationId);
     const isDeletingReminder = hasStoredReminder && !updateEventDto.hasReminder;
@@ -153,7 +156,7 @@ export class EventsService {
     return endDate.toDate();
   }
 
-  private async checkAndGetCorrectTagId(newTagId = ''): Promise<string> {
+  private async checkAndGetCorrectTagId(newTagId: string): Promise<string> {
     const existedTag = await this.tagRepository.findOneBy({
       id: newTagId,
     });

@@ -22,6 +22,7 @@
     "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js -n ./database/seed-config.ts seed",
     "typeorm-cli": "ts-node ./node_modules/typeorm/cli.js -d ./database/ormconfig.ts",
     "migrate:run": "yarn typeorm-cli migration:run",
+    "migrate:run:production": "NODE_ENV=production yarn typeorm-cli migration:run",
     "migrate:generate": "yarn typeorm-cli migration:generate ./database/migrations/$npm_config_name",
     "migrate:revert": "yarn typeorm-cli migration:revert",
     "docker-compose-rebuild": "docker-compose up --build -V"

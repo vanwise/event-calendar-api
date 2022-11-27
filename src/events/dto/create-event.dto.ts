@@ -7,21 +7,26 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { IsNotEmptyString } from '../../validations/IsNotEmptyString';
+import { IsUndefined } from '../../validations/IsUndefined';
+import { EmptyStringToNull } from '../../validations/EmptyStringToNull';
+import { Trim } from '../../validations/Trim';
 
 export class CreateEventDto {
+  @IsString()
+  @Trim()
   @IsNotEmpty()
-  @IsNotEmptyString()
   @ApiProperty({ example: 'Super event', description: 'Event title' })
   readonly title: string;
 
   @IsOptional()
-  @IsNotEmptyString()
+  @IsString()
+  @Trim()
+  @EmptyStringToNull()
   @ApiProperty({
     example: 'This event very cool',
     description: 'Event description',
   })
-  readonly description?: string;
+  readonly description?: string | null;
 
   @IsNotEmpty()
   @IsUUID()
@@ -31,7 +36,7 @@ export class CreateEventDto {
   })
   readonly tagId: string;
 
-  @IsOptional()
+  @IsUndefined()
   @IsBoolean()
   @ApiProperty({
     description: 'Shows whether the event has a reminder or not',
@@ -39,7 +44,6 @@ export class CreateEventDto {
   readonly hasReminder?: boolean;
 
   @IsNotEmpty()
-  @IsString()
   @IsISO8601({ strict: true })
   @ApiProperty({
     example: '2022-09-14T18:00:00.000Z',
@@ -48,7 +52,6 @@ export class CreateEventDto {
   readonly startDateISO: string;
 
   @IsNotEmpty()
-  @IsString()
   @IsISO8601({ strict: true })
   @ApiProperty({
     example: '2022-09-14T18:00:00.000Z',

@@ -43,9 +43,8 @@ export class UsersService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const trimmedLogin = createUserDto.login.trim();
     const existedUser = await this.userRepository.findOneBy({
-      login: trimmedLogin,
+      login: createUserDto.login,
     });
 
     if (existedUser) {
@@ -54,10 +53,10 @@ export class UsersService {
 
     const newUser = new User();
 
-    newUser.firstName = createUserDto.firstName.trim();
-    newUser.lastName = createUserDto.lastName?.trim();
+    newUser.firstName = createUserDto.firstName;
+    newUser.lastName = createUserDto.lastName;
     newUser.email = createUserDto.email;
-    newUser.login = trimmedLogin;
+    newUser.login = createUserDto.login;
     newUser.password = await this.getPasswordHash(createUserDto.password);
     newUser.passwordChangeDate = this.timeService.getDate().toISOString();
 
@@ -70,8 +69,8 @@ export class UsersService {
   ): Promise<PublicUser> {
     const storedUser = await this.getUserByLogin(login);
 
-    storedUser.firstName = updateUserDto.firstName.trim();
-    storedUser.lastName = updateUserDto.lastName?.trim();
+    storedUser.firstName = updateUserDto.firstName;
+    storedUser.lastName = updateUserDto.lastName;
     storedUser.email = updateUserDto.email;
 
     const savedUser = await this.userRepository.save(storedUser);
@@ -104,9 +103,7 @@ export class UsersService {
 
   private async getPasswordHash(password: string): Promise<string> {
     const salt = 10;
-    const trimmedPassword = password.trim();
-
-    return await bcrypt.hash(trimmedPassword, salt);
+    return await bcrypt.hash(password, salt);
   }
 
   private getPublicUser(storedUser: User): PublicUser {

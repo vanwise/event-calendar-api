@@ -2,27 +2,34 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsISO8601,
+  IsNotEmpty,
   IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
-import { IsNotEmptyString } from '../../validations/IsNotEmptyString';
+import { Trim } from '../../validations/Trim';
+import { EmptyStringToNull } from '../../validations/EmptyStringToNull';
+import { IsUndefined } from '../../validations/IsUndefined';
 
 export class UpdateEventDto {
-  @IsOptional()
-  @IsNotEmptyString()
+  @IsUndefined()
+  @IsString()
+  @Trim()
+  @IsNotEmpty()
   @ApiProperty({ example: 'Super event', description: 'Event title' })
   readonly title?: string;
 
   @IsOptional()
-  @IsNotEmptyString()
+  @IsString()
+  @Trim()
+  @EmptyStringToNull()
   @ApiProperty({
     example: 'This event very cool',
     description: 'Event description',
   })
-  readonly description?: string;
+  readonly description?: string | null;
 
-  @IsOptional()
+  @IsUndefined()
   @IsUUID()
   @ApiProperty({
     example: 'ace9138c-c255-4c1c-98ff-dbc82a6e51a5',
@@ -30,15 +37,14 @@ export class UpdateEventDto {
   })
   readonly tagId?: string;
 
-  @IsOptional()
+  @IsUndefined()
   @IsBoolean()
   @ApiProperty({
     description: 'Shows whether the event has a reminder or not',
   })
   readonly hasReminder?: boolean;
 
-  @IsOptional()
-  @IsString()
+  @IsUndefined()
   @IsISO8601({ strict: true })
   @ApiProperty({
     example: '2022-09-14T18:00:00.000Z',
@@ -46,8 +52,7 @@ export class UpdateEventDto {
   })
   readonly startDateISO?: string;
 
-  @IsOptional()
-  @IsString()
+  @IsUndefined()
   @IsISO8601({ strict: true })
   @ApiProperty({
     example: '2022-09-14T18:00:00.000Z',
